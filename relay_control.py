@@ -3,10 +3,9 @@
 # Description: This Python script allows you to control relays via a serial port connection.
 # The script sends 8 bytes commands to toggle, turn on, turn off, or momentarily activate relays connected to the specified COM port.
 
-import serial #py -m pip install pyserial
+import serial  # py -m pip install pyserial
 import sys
 import time
-
 
 def calculate_checksum(command_bytes):
     return sum(command_bytes) % 256
@@ -32,17 +31,41 @@ def send_command(port, relay, action):
             command = create_command(relay, action)
             ser.write(command)
             ser.flush()  # Ensure all data is sent
-            time.sleep(0.1)  # Add a small delay            
+            time.sleep(0.1)  # Add a small delay
+            
             print(f"Sent command: {' '.join(format(x, '02X') for x in command)}")
+
+            # Now read the 8-byte response from the device
+            response = ser.read(8)  # Read 8 bytes from the serial port
+            if len(response) == 8:
+                print(f"Received response: {' '.join(format(x, '02X') for x in response)}")
+                return response
+            else:
+                print("Error: Did not receive 8 bytes from the device.")
+                return None
+
     except serial.SerialException as e:
         print(f"Error: {e}")
         sys.exit(1)
-       
+
+def print_all_relay_statuses(response, action):
+    if response:
+        if action == 7:  # ALL ON
+            print("All relays are now ON.")
+        elif action == 8:  # ALL OFF
+            print("All relays are now OFF.")
+        else:
+            relay_number = response[5]  # 6th byte in the response represents the relay number
+            relay_status = response[6]  # 7th byte in the response represents the relay status
+            status_map = {1: 'ON', 2: 'OFF'}
+            status = status_map.get(relay_status, 'UNKNOWN')
+            print(f"Relay {relay_number}: {status}")
+
 if __name__ == "__main__":
     if len(sys.argv) != 4:
         print("Usage: python relay_control.py <COM_PORT> <RELAY_NUMBER> <ACTION>")
         print("RELAY_NUMBER: 1-8")
-        print("ACTION: 1=ON, 2=OFF, 3=TOGGLE, 5=MOMENTARY ON, 7= ALL ON, 8=ALL OFF")
+        print("ACTION: 1=ON, 2=OFF, 3=TOGGLE, 5=MOMENTARY ON, 7=ALL ON, 8=ALL OFF")
         sys.exit(1)
 
     port = sys.argv[1]
@@ -53,8 +76,11 @@ if __name__ == "__main__":
         print("Error: Relay number must be between 1 and 8.")
         sys.exit(1)
 
-    if action < 1 or action > 8:
+    if action not in [1, 2, 3, 5, 7, 8]:
         print("Error: Action must be 1 (ON), 2 (OFF), 3 (TOGGLE), 5 (MOMENTARY ON), 7 (ALL ON), or 8 (ALL OFF).")
         sys.exit(1)
 
-    send_command(port, relay, action)
+    response = send_command(port, relay, action)
+
+    # Print the status of all relays in a compact way
+    print_all_relay_statuses(response, action)
