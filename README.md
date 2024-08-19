@@ -17,7 +17,9 @@ where parameters are:
 1: Turn ON
 2: Turn OFF
 3: Toggle
-4: Momentary ON (0.5-second hold, then release)
+5: Momentary ON (0.5-second hold, then release)
+7: All relays ON
+8: All relays OFF
 ```
 
 To toggle relay 1 connected to COM4:
