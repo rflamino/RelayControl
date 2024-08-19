@@ -26,19 +26,21 @@ def send_command(port, relay, action):
             bytesize=serial.EIGHTBITS,
             parity=serial.PARITY_NONE,
             stopbits=serial.STOPBITS_ONE,
-            timeout=1
+            timeout=0.1
         ) as ser:
             command = create_command(relay, action)
             ser.write(command)
             ser.flush()  # Ensure all data is sent
-            time.sleep(0.1)  # Add a small delay
+            # Wait until there is data waiting in the input buffer
+            while ser.in_waiting == 0:
+                pass  # Busy-wait for data to arrive
             
-            print(f"Sent command: {' '.join(format(x, '02X') for x in command)}")
+            #print(f"Sent command: {' '.join(format(x, '02X') for x in command)}")
 
             # Now read the 8-byte response from the device
             response = ser.read(8)  # Read 8 bytes from the serial port
             if len(response) == 8:
-                print(f"Received response: {' '.join(format(x, '02X') for x in response)}")
+                #print(f"Received response: {' '.join(format(x, '02X') for x in response)}")
                 return response
             else:
                 print("Error: Did not receive 8 bytes from the device.")
@@ -83,4 +85,4 @@ if __name__ == "__main__":
     response = send_command(port, relay, action)
 
     # Print the status of all relays in a compact way
-    print_all_relay_statuses(response, action)
+    #print_all_relay_statuses(response, action)
