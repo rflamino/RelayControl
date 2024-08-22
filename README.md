@@ -14,6 +14,7 @@ where parameters are:
 <COM_PORT>: The COM port to which the relay device is connected (e.g., COM4).
 <RELAY_NUMBER>: The relay number you want to control (1-8).
 <ACTION>: The action to perform on the relay
+0: Read relay status
 1: Turn ON
 2: Turn OFF
 3: Toggle
