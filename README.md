@@ -2,6 +2,9 @@
 Serial control of relay board [UD74B08](https://eletechsups.com/others-c-2_3_24/ud74b08-dc-24v-8ch-io-digital-collector-usb-com-serial-port-uart-relay-module-p-1045.html) 8ch IO Digital USB COM Serial Port UART Relay Module.
 This Python script allows you to control relays via a serial port connection. The script sends 8 bytes commands to toggle, turn on, turn off, interlock, or momentarily activate relays connected to the specified COM port.
 
+Hackaday project page:
+[Hackaday.io](https://hackaday.io/project/197449-relaycontrol-ud74b08)
+
 ![image](https://github.com/user-attachments/assets/77013d49-43e4-4aae-b7c6-066d80173c6c)
 
 Command is:
