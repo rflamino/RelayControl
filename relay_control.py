@@ -67,7 +67,7 @@ if __name__ == "__main__":
     if len(sys.argv) != 4:
         print("Usage: python relay_control.py <COM_PORT> <RELAY_NUMBER> <ACTION>")
         print("RELAY_NUMBER: 1-8")
-        print("ACTION: 0=READ STATUS 1=ON, 2=OFF, 3=TOGGLE, 5=MOMENTARY ON, 7=ALL ON, 8=ALL OFF")
+        print("ACTION: 0=READ STATUS 1=ON, 2=OFF, 3=TOGGLE, 4=INTERLOCK, 5=MOMENTARY ON, 7=ALL ON, 8=ALL OFF")
         sys.exit(1)
 
     port = sys.argv[1]
@@ -78,8 +78,8 @@ if __name__ == "__main__":
         print("Error: Relay number must be between 1 and 8.")
         sys.exit(1)
 
-    if action not in [0,1, 2, 3, 5, 7, 8]:
-        print("Error: Action must be 0 (READ STATUS), 1 (ON), 2 (OFF), 3 (TOGGLE), 5 (MOMENTARY ON), 7 (ALL ON), or 8 (ALL OFF).")
+    if action not in [0,1, 2, 3, 4, 5, 7, 8]:
+        print("Error: Action must be 0 (READ STATUS), 1 (ON), 2 (OFF), 3 (TOGGLE), 4 (INTERLOCK),5 (MOMENTARY ON), 7 (ALL ON), or 8 (ALL OFF).")
         sys.exit(1)
 
     response = send_command(port, relay, action)
